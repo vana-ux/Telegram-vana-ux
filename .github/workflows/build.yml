@@ -13,12 +13,13 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      ANDROID_HOME: /usr/local/lib/android/sdk
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        
+        with:
+          repository: TelegramOrg/Telegram-Android
+          ref: master
+          
       - name: Setup JDK 17
         uses: actions/setup-java@v4
         with:
@@ -26,9 +27,7 @@ jobs:
           java-version: '17'
           
       - name: Setup Android SDK
-        run: |
-          yes | sdkmanager --licenses
-          sdkmanager "platforms;android-27" "ndk;20.1.5948944" "build-tools;30.0.3"
+        uses: android-actions/setup-android@v3
           
       - name: Set API credentials
         run: |
@@ -37,9 +36,9 @@ jobs:
           
       - name: Build APK
         run: |
-          cd Tools/gradleWrapper
-          chmod +x gradlew
-          ./gradlew assembleRelease
+          cd TMessagesProj
+          chmod +x ../gradlew
+          ../gradlew assembleRelease
           
       - name: Upload APK
         uses: actions/upload-artifact@v4
